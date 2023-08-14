@@ -1,6 +1,12 @@
 <Project>
-  <PropertyGroup>
-    <Nullable>enable</Nullable>
-    <AvaloniaVersion>11.0.2</AvaloniaVersion>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <ReactiveUIVersion>19.4.1</ReactiveUIVersion>
+        <SplatVersion>14.7.1</SplatVersion>
+        <SplatSourceGeneratorVersion>1.1.93</SplatSourceGeneratorVersion>
+        <AvaloniaVersion>11.0.3</AvaloniaVersion>
+    </PropertyGroup>
 </Project>

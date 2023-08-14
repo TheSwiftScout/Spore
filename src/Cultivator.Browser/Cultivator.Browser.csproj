@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+      <!-- ReSharper disable once UnknownProperty (defined in Directory.Build.props) -->
     <PackageReference Include="Avalonia.Browser" Version="$(AvaloniaVersion)" />
   </ItemGroup>
 
