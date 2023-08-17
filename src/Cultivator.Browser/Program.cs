@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Browser;
 using Avalonia.ReactiveUI;
-using Cultivator;
+using Cultivator.Application;
 
 [assembly: SupportedOSPlatform("browser")]
 

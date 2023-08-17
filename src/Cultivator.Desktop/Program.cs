@@ -1,6 +1,7 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.ReactiveUI;
+using Cultivator.Application;
 using Serilog;
 using Serilog.Events;
 using Splat;
