@@ -4,9 +4,8 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Cultivator.Main;
 using Cultivator.QBittorrent;
-using Cultivator.ViewModels;
-using Cultivator.Views;
 using ReactiveUI;
 using Splat;
 
@@ -26,18 +25,17 @@ public partial class App : Application
         // OnFrameworkInitializationCompleted is called after Avalonia initialization,
         // so ApplicationLifetime is not null
         var suspension = new AutoSuspendHelper(ApplicationLifetime!);
-        RxApp.SuspensionHost.CreateNewAppState = () => new AppState();
-        RxApp.SuspensionHost.SetupDefaultSuspendResume(new AkavacheSuspensionDriver<AppState>());
+        RxApp.SuspensionHost.CreateNewAppState = () => new MainState();
+        RxApp.SuspensionHost.SetupDefaultSuspendResume(new AkavacheSuspensionDriver<MainState>());
         suspension.OnFrameworkInitializationCompleted();
 
-        var appState = RxApp.SuspensionHost.GetAppState<AppState>();
+        var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
 
         SplatRegistrations.SetupIOC();
 
-        SplatRegistrations.RegisterConstant(appState);
-
         SplatRegistrations.RegisterLazySingleton<TransientHttpErrorHandler>();
 
+        SplatRegistrations.RegisterConstant(mainState);
         SplatRegistrations.RegisterLazySingleton<MainViewModel>();
 
         SplatRegistrations.RegisterLazySingleton<QBittorrentClientFactory>();

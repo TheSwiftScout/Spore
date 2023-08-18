@@ -1,10 +1,10 @@
 ﻿using System.Runtime.Serialization;
 using Cultivator.QBittorrent;
 
-namespace Cultivator;
+namespace Cultivator.Main;
 
 [DataContract]
-public class AppState
+public class MainState
 {
     [DataMember] public QBittorrentState QBittorrentState { get; set; } = new();
 }

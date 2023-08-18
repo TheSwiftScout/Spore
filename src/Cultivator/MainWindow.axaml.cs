@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace Cultivator.Views;
+namespace Cultivator;
 
 public partial class MainWindow : Window
 {
