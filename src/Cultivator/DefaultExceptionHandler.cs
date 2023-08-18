@@ -4,7 +4,7 @@ using System.Reactive.Concurrency;
 using ReactiveUI;
 using Splat;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
 internal sealed class DefaultExceptionHandler : IObserver<Exception>, IEnableLogger
 {

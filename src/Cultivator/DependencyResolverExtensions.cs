@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Splat;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
 public static class DependencyResolverExtensions
 {

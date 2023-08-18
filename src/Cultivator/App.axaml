@@ -1,12 +1,12 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:application="using:Cultivator.Application"
-             x:Class="Cultivator.Application.App"
+             xmlns:cultivator="clr-namespace:Cultivator"
+             x:Class="Cultivator.App"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.DataTemplates>
-        <application:ViewLocator />
+        <cultivator:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>

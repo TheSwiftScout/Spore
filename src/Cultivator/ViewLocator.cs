@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Cultivator.ViewModels;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
 public class ViewLocator : IDataTemplate
 {

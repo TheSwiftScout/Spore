@@ -18,9 +18,7 @@
         <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
         <!-- Add Avalonia.Diagnostics package in Debug configuration. -->
-        <PackageReference Include="Avalonia.Diagnostics"
-                          Version="$(AvaloniaVersion)"
-                          Condition="'$(Configuration)' == 'Debug'" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" Condition="'$(Configuration)' == 'Debug'" />
     </ItemGroup>
 
     <ItemGroup>

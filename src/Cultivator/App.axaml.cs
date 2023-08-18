@@ -1,16 +1,18 @@
 using System;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Cultivator.QBittorrent;
 using Cultivator.ViewModels;
 using Cultivator.Views;
 using ReactiveUI;
 using Splat;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
-public partial class App : Avalonia.Application
+public partial class App : Application
 {
     public override void Initialize()
     {
@@ -35,6 +37,10 @@ public partial class App : Avalonia.Application
         SplatRegistrations.RegisterConstant(appState);
 
         SplatRegistrations.RegisterLazySingleton<MainViewModel>();
+
+        SplatRegistrations.RegisterLazySingleton<QBittorrentCookieHandler>();
+        SplatRegistrations.RegisterLazySingleton<QBittorrentClientFactory>();
+        SplatRegistrations.RegisterLazySingleton<QBittorrentViewModelFactory>();
 
         var assembly = Assembly.GetAssembly(GetType());
         if (assembly is null)

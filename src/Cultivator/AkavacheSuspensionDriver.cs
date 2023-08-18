@@ -3,7 +3,7 @@ using System.Reactive;
 using Akavache;
 using ReactiveUI;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
 internal sealed class AkavacheSuspensionDriver<TAppState> : ISuspensionDriver where TAppState : class
 {

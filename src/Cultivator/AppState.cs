@@ -1,7 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using Cultivator.QBittorrent;
 
-namespace Cultivator.Application;
+namespace Cultivator;
 
 [DataContract]
 public class AppState
