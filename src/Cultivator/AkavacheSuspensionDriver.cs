@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reactive;
+using System.Runtime.InteropServices;
 using Akavache;
 using ReactiveUI;
 
@@ -13,8 +14,10 @@ internal sealed class AkavacheSuspensionDriver<TAppState> : ISuspensionDriver wh
     public AkavacheSuspensionDriver(string appName = "Cultivator")
     {
         BlobCache.ApplicationName = appName;
-        // TODO use BlobCache.Secure for credentials
-        _blobCache = BlobCache.UserAccount;
+
+        _blobCache = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            ? BlobCache.Secure
+            : BlobCache.UserAccount;
     }
 
     public IObservable<object> LoadState()
