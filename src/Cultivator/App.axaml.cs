@@ -36,9 +36,10 @@ public partial class App : Application
 
         SplatRegistrations.RegisterConstant(appState);
 
+        SplatRegistrations.RegisterLazySingleton<TransientHttpErrorHandler>();
+
         SplatRegistrations.RegisterLazySingleton<MainViewModel>();
 
-        SplatRegistrations.RegisterLazySingleton<QBittorrentCookieHandler>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentClientFactory>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentViewModelFactory>();
 

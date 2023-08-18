@@ -6,11 +6,18 @@
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     </PropertyGroup>
 
-    <!-- ReSharper disable UnknownProperty (defined in Directory.Build.props) -->
-
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Polly" Version="7.2.4" />
+        <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
+        <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+        <PackageReference Include="Refit" Version="7.0.0" />
+    </ItemGroup>
+
+    <!-- ReSharper disable UnknownProperty (defined in Directory.Build.props) -->
 
     <ItemGroup>
         <PackageReference Include="akavache" Version="9.1.20" />
@@ -30,10 +37,4 @@
     </ItemGroup>
 
     <!-- ReSharper restore UnknownProperty -->
-
-    <ItemGroup>
-        <PackageReference Include="Polly" Version="7.2.4" />
-        <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
-        <PackageReference Include="Refit" Version="7.0.0" />
-    </ItemGroup>
 </Project>
