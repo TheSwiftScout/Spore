@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -73,5 +74,15 @@ public class QBittorrentClient
         {
             { "hash", hash }
         });
+    }
+
+    public async Task<Stream> Export(string hash)
+    {
+        var httpContent = await _api.Export(new Dictionary<string, object>
+        {
+            { "hash", hash }
+        });
+        await httpContent.LoadIntoBufferAsync();
+        return await httpContent.ReadAsStreamAsync();
     }
 }

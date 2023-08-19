@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Refit;
 
@@ -32,6 +33,11 @@ public interface IQBittorrentApi
 
     [Post("/api/v2/torrents/pieceHashes")]
     Task<List<string>> GetTorrentPieceHashes(
+        [Body(BodySerializationMethod.UrlEncoded)]
+        Dictionary<string, object> data);
+
+    [Post("/api/v2/torrents/export")]
+    Task<HttpContent> Export(
         [Body(BodySerializationMethod.UrlEncoded)]
         Dictionary<string, object> data);
 }
