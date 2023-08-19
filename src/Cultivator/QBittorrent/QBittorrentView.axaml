@@ -13,7 +13,7 @@
         <qBittorrent:QBittorrentViewModel />
     </Design.DataContext>
 
-    <StackPanel Orientation="Vertical" Margin="20">
+    <StackPanel x:Name="LoginForm" Orientation="Vertical" Margin="20">
         <Label Content="Host URL" Target="HostUrl" />
         <TextBox x:Name="HostUrl" Watermark="http://localhost:39739" />
         <Label Content="Username" Target="Username" />

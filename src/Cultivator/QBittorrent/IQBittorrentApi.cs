@@ -7,8 +7,6 @@ namespace Cultivator.QBittorrent;
 
 public interface IQBittorrentApi
 {
-    public HttpClient Client { get; }
-
     // Authentication
 
     [Post("/api/v2/auth/login")]

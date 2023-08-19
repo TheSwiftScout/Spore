@@ -14,6 +14,8 @@ public class QBittorrentViewModel : ViewModelBase
         Username = state.Username;
         Password = state.Password;
 
+        // TODO dispose some subscriptions
+
         this.WhenAnyValue(vm => vm.HostUrl)
             .Subscribe(hostUrl => state.HostUrl = hostUrl);
 
@@ -27,6 +29,8 @@ public class QBittorrentViewModel : ViewModelBase
             .WhenAnyValue(vm => vm.QBittorrentClient)
             .SelectMany(client => client is null ? Observable.Return(false) : client.IsAuthenticated)
             .DistinctUntilChanged();
+
+        isAuthenticated.ToPropertyEx(this, vm => vm.IsAuthenticated);
 
         var canLogin = this
             .WhenAnyValue(
@@ -59,6 +63,8 @@ public class QBittorrentViewModel : ViewModelBase
     }
 
     [Reactive] private QBittorrentClient? QBittorrentClient { get; set; }
+
+    [ObservableAsProperty] public bool IsAuthenticated { get; set; }
 
     [Reactive] public string? HostUrl { get; set; }
 
