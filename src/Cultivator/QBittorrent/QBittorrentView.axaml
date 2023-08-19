@@ -13,17 +13,24 @@
         <qBittorrent:QBittorrentViewModel />
     </Design.DataContext>
 
-    <StackPanel x:Name="LoginForm" Orientation="Vertical" Margin="20">
-        <Label Content="Host URL" Target="HostUrl" />
-        <TextBox x:Name="HostUrl" Watermark="http://localhost:39739" />
-        <Label Content="Username" Target="Username" />
-        <TextBox x:Name="Username" Watermark="admin" />
-        <Label Content="Password" Target="Password" />
-        <TextBox x:Name="Password" PasswordChar="*" Watermark="adminadmin" />
-        <StackPanel Orientation="Horizontal" Margin="0 5">
-            <Button x:Name="LoginButton" Content="Login" />
-            <Button x:Name="LogoutButton" Content="Logout" Margin="5 0 0 0" />
+    <Grid RowDefinitions="Auto,*" Margin="20">
+
+        <TextBlock FontSize="24" Text="qBittorrent" />
+
+        <StackPanel x:Name="LoginForm" Orientation="Vertical" Grid.Row="1">
+            <Label Content="Host URL" Target="HostUrl" />
+            <TextBox x:Name="HostUrl" Watermark="http://localhost:39739" />
+            <Label Content="Username" Target="Username" />
+            <TextBox x:Name="Username" Watermark="admin" />
+            <Label Content="Password" Target="Password" />
+            <TextBox x:Name="Password" PasswordChar="*" Watermark="adminadmin" />
+                <Button x:Name="LoginButton" Content="Login" Margin="0 5" />
         </StackPanel>
-    </StackPanel>
+
+        <Grid x:Name="TorrentsList" RowDefinitions="*,Auto" Grid.Row="1">
+            <TreeDataGrid x:Name="TorrentsDataGrid" Grid.Row="0" />
+            <Button x:Name="LogoutButton" Content="Logout" Margin="0 5" Grid.Row="1" />
+        </Grid>
+    </Grid>
 
 </reactiveUi:ReactiveUserControl>

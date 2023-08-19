@@ -1,7 +1,9 @@
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Controls;
+using Avalonia.Controls.Models.TreeDataGrid;
 using Avalonia.Input;
 using Avalonia.ReactiveUI;
 using ReactiveMarbles.ObservableEvents;
@@ -11,9 +13,27 @@ namespace Cultivator.QBittorrent;
 
 public partial class QBittorrentView : ReactiveUserControl<QBittorrentViewModel>
 {
+    private readonly FlatTreeDataGridSource<QBittorrentTorrent> _treeGridDataSource;
+
     public QBittorrentView()
     {
         InitializeComponent();
+
+        _treeGridDataSource = new FlatTreeDataGridSource<QBittorrentTorrent>(Enumerable.Empty<QBittorrentTorrent>())
+        {
+            Columns =
+            {
+                new TextColumn<QBittorrentTorrent, string>(
+                    "Name",
+                    torrent => torrent.Name),
+
+                new TextColumn<QBittorrentTorrent, string>(
+                    "Hash",
+                    torrent => torrent.Hash)
+            }
+        };
+
+        TorrentsDataGrid.Source = _treeGridDataSource;
 
         this.WhenActivated(disposables =>
         {
@@ -43,12 +63,22 @@ public partial class QBittorrentView : ReactiveUserControl<QBittorrentViewModel>
             this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutButton)
                 .DisposeWith(disposables);
 
+            isNotAuthenticated
+                .BindTo(this, v => v.LoginForm.IsVisible)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.IsAuthenticated, v => v.TorrentsList.IsVisible)
+                .DisposeWith(disposables);
+
+            // ReSharper disable once RedundantCast
             ((StackPanel)LoginForm)
                 .Events()
                 .KeyUp
                 .Where(e => e.Key == Key.Enter)
                 .Select(_ => Unit.Default)
                 .InvokeCommand(ViewModel.LoginCommand);
+
+            this.OneWayBind(ViewModel, vm => vm.Torrents, v => v._treeGridDataSource.Items)
+                .DisposeWith(disposables);
         });
     }
 }

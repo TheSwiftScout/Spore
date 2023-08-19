@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Refit;
 
@@ -10,19 +9,29 @@ public interface IQBittorrentApi
     // Authentication
 
     [Post("/api/v2/auth/login")]
-    public Task Login(
+    Task Login(
         [Header("Referer")] string referer,
         [Body(BodySerializationMethod.UrlEncoded)]
         Dictionary<string, object> data);
 
     [Post("/api/v2/auth/logout")]
-    public Task Logout();
+    Task Logout();
 
     // Application
 
     [Get("/api/v2/app/version")]
-    public Task<string> GetApplicationVersion();
+    Task<string> GetApplicationVersion();
 
     [Get("/api/v2/app/webapiVersion")]
-    public Task<string> GetApiVersion();
+    Task<string> GetApiVersion();
+
+    // Torrent Management
+
+    [Get("/api/v2/torrents/info")]
+    Task<List<QBittorrentTorrent>> GetTorrentList();
+
+    [Post("/api/v2/torrents/pieceHashes")]
+    Task<List<string>> GetTorrentPieceHashes(
+        [Body(BodySerializationMethod.UrlEncoded)]
+        Dictionary<string, object> data);
 }

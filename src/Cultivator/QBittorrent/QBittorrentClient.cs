@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Refit;
 
@@ -22,7 +23,15 @@ public class QBittorrentClient
 
         _api = RestService.For<IQBittorrentApi>(
             hostUrl,
-            new RefitSettings { HttpMessageHandlerFactory = () => transientHttpErrorHandler });
+            new RefitSettings
+            {
+                HttpMessageHandlerFactory = () => transientHttpErrorHandler,
+                ContentSerializer = new SystemTextJsonContentSerializer(
+                    new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                    })
+            });
     }
 
     public IObservable<bool> IsAuthenticated => _isAuthenticated.DistinctUntilChanged();
@@ -51,5 +60,18 @@ public class QBittorrentClient
         }
 
         _isAuthenticated.OnNext(false);
+    }
+
+    public async Task<List<QBittorrentTorrent>> GetTorrentList()
+    {
+        return await _api.GetTorrentList();
+    }
+
+    public async Task<List<string>> GetTorrentPieceHashes(string hash)
+    {
+        return await _api.GetTorrentPieceHashes(new Dictionary<string, object>
+        {
+            { "hash", hash }
+        });
     }
 }
