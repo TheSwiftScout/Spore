@@ -2,15 +2,15 @@
 
 public class QBittorrentClientFactory
 {
-    private readonly TransientHttpErrorHandler _transientHttpErrorHandler;
+    private readonly TransientHttpErrorHandler _httpHandler;
 
-    public QBittorrentClientFactory(TransientHttpErrorHandler transientHttpErrorHandler)
+    public QBittorrentClientFactory(TransientHttpErrorHandler httpHandler)
     {
-        _transientHttpErrorHandler = transientHttpErrorHandler;
+        _httpHandler = httpHandler;
     }
 
     public QBittorrentClient Create(string hostUrl)
     {
-        return new QBittorrentClient(hostUrl, _transientHttpErrorHandler);
+        return new QBittorrentClient(hostUrl, _httpHandler);
     }
 }

@@ -4,6 +4,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Cultivator.Gazelle;
 using Cultivator.Main;
 using Cultivator.QBittorrent;
 using ReactiveUI;
@@ -11,7 +12,7 @@ using Splat;
 
 namespace Cultivator;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
@@ -33,7 +34,7 @@ public partial class App : Application
 
         SplatRegistrations.SetupIOC();
 
-        SplatRegistrations.RegisterLazySingleton<TransientHttpErrorHandler>();
+        SplatRegistrations.Register<TransientHttpErrorHandler>();
 
         SplatRegistrations.RegisterConstant(mainState);
         SplatRegistrations.RegisterLazySingleton<MainViewModel>();
@@ -41,9 +42,19 @@ public partial class App : Application
         SplatRegistrations.RegisterLazySingleton<QBittorrentClientFactory>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentViewModelFactory>();
 
-        var assembly = Assembly.GetAssembly(GetType());
-        if (assembly is null)
-            throw new InvalidOperationException("Registry assembly must not be null");
+        SplatRegistrations.Register<GazelleHandlerFactory>();
+        SplatRegistrations.Register<GazelleHandler>();
+
+        SplatRegistrations.RegisterLazySingleton<RedactedClient>();
+        SplatRegistrations.RegisterLazySingleton<RedactedLoginViewModel>();
+        SplatRegistrations.Register<IViewFor<RedactedLoginViewModel>, GazelleLoginView>();
+
+        SplatRegistrations.RegisterLazySingleton<OrpheusClient>();
+        SplatRegistrations.RegisterLazySingleton<OrpheusLoginViewModel>();
+        SplatRegistrations.Register<IViewFor<OrpheusLoginViewModel>, GazelleLoginView>();
+
+        var assembly = Assembly.GetAssembly(GetType()) ??
+                       throw new InvalidOperationException("Registry assembly must not be null");
         Locator.CurrentMutable.RegisterViewsForViewModels(assembly);
 
         var mainView = new MainView

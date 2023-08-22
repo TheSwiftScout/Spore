@@ -13,7 +13,7 @@
         <qBittorrent:QBittorrentViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*" Margin="20">
+    <Grid RowDefinitions="Auto,*">
 
         <TextBlock FontSize="24" Text="qBittorrent" />
 

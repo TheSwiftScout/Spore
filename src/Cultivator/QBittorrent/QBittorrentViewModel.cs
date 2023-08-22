@@ -77,7 +77,7 @@ public class QBittorrentViewModel : ViewModelBase
 
         var loadTorrentsList = ReactiveCommand.CreateFromTask(async () =>
         {
-            var torrents = await QBittorrentClient.GetTorrentList();
+            var torrents = (await QBittorrentClient.GetTorrentList()).ToList();
             torrentsSourceCache.AddOrUpdate(torrents);
             var removedTorrents = torrentsSourceCache.Keys.Except(torrents.Select(t => t.Hash));
             torrentsSourceCache.RemoveKeys(removedTorrents);
