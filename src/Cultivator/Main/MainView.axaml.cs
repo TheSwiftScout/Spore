@@ -12,11 +12,7 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
 
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel, vm => vm.QBittorrentViewModel, v => v.QBittorrentViewHost.ViewModel)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel, vm => vm.RedactedLoginViewModel, v => v.RedactedLoginHost.ViewModel)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel, vm => vm.OrpheusLoginViewModel, v => v.OrpheusLoginHost.ViewModel)
+            this.OneWayBind(ViewModel, vm => vm.Router, v => v.RouterHost.Router)
                 .DisposeWith(disposables);
         });
     }

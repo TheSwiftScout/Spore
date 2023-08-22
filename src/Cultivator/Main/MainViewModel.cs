@@ -1,22 +1,24 @@
-﻿using Cultivator.Gazelle;
-using Cultivator.QBittorrent;
+﻿using System.Reactive;
+using System.Reactive.Linq;
+using Cultivator.Login;
+using ReactiveUI;
 
 namespace Cultivator.Main;
 
-public class MainViewModel : ViewModelBase
+public class MainViewModel : ViewModelBase, IScreen
 {
-    public MainViewModel(
-        MainState state,
-        QBittorrentViewModelFactory qBittorrentViewModelFactory,
-        RedactedLoginViewModel redactedLoginViewModel,
-        OrpheusLoginViewModel orpheusLoginViewModel)
+    private readonly ReactiveCommand<Unit, IRoutableViewModel> _openLoginCommand;
+
+    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
+    public MainViewModel(LoginViewModel loginViewModel)
     {
-        QBittorrentViewModel = qBittorrentViewModelFactory.Create(state.QBittorrentState);
-        RedactedLoginViewModel = redactedLoginViewModel;
-        OrpheusLoginViewModel = orpheusLoginViewModel;
+        _openLoginCommand = ReactiveCommand.CreateFromObservable(() =>
+            Router.NavigateAndReset.Execute(loginViewModel));
+
+        this.WhenAnyValue(vm => vm._openLoginCommand)
+            .Select(_ => Unit.Default)
+            .InvokeCommand(_openLoginCommand);
     }
 
-    public QBittorrentViewModel QBittorrentViewModel { get; }
-    public RedactedLoginViewModel RedactedLoginViewModel { get; }
-    public OrpheusLoginViewModel OrpheusLoginViewModel { get; }
+    public RoutingState Router { get; } = new();
 }

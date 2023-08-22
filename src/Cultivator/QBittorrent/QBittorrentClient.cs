@@ -2,62 +2,121 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Cultivator.Main;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Refit;
 
 namespace Cultivator.QBittorrent;
 
-public class QBittorrentClient
+public class QBittorrentClient : ReactiveObject
 {
-    private readonly IQBittorrentApi _api;
-    private readonly string _hostUrl;
     private readonly BehaviorSubject<bool> _isAuthenticated = new(false);
+    private readonly RefitSettings _refitSettings;
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
-    public QBittorrentClient(string hostUrl, TransientHttpErrorHandler transientHttpErrorHandler)
+    public QBittorrentClient(MainState mainState, TransientHttpErrorHandler transientHttpErrorHandler)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(hostUrl, nameof(hostUrl));
-        _hostUrl = hostUrl;
+        _refitSettings = new RefitSettings
+        {
+            HttpMessageHandlerFactory = () => transientHttpErrorHandler,
+            ContentSerializer = new SystemTextJsonContentSerializer(
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
+                })
+        };
 
-        _api = RestService.For<IQBittorrentApi>(
-            hostUrl,
-            new RefitSettings
-            {
-                HttpMessageHandlerFactory = () => transientHttpErrorHandler,
-                ContentSerializer = new SystemTextJsonContentSerializer(
-                    new JsonSerializerOptions
-                    {
-                        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
-                    })
-            });
+        var state = mainState.QBittorrentState;
+
+        HostUrl = state.HostUrl;
+        Username = state.Username;
+        Password = state.Password;
+
+        this.WhenAnyValue(c => c.HostUrl)
+            .DistinctUntilChanged()
+            .Subscribe(hostUrl => state.HostUrl = hostUrl);
+
+        this.WhenAnyValue(c => c.Username)
+            .DistinctUntilChanged()
+            .Subscribe(username => state.Username = username);
+
+        this.WhenAnyValue(c => c.Password)
+            .DistinctUntilChanged()
+            .Subscribe(password => state.Password = password);
+
+        var canLogin = this
+            .WhenAnyValue(
+                vm => vm.HostUrl,
+                vm => vm.Username,
+                vm => vm.Password,
+                (hostUrl, username, password) =>
+                    IsValidHttpUrl(hostUrl) &&
+                    !string.IsNullOrWhiteSpace(username) &&
+                    !string.IsNullOrWhiteSpace(password))
+            .CombineLatest(IsAuthenticated.Select(auth => !auth))
+            .Select(combined => combined is { First: true, Second: true })
+            .DistinctUntilChanged();
+
+        LoginCommand = ReactiveCommand.CreateFromTask(Login, canLogin);
+        LogoutCommand = ReactiveCommand.CreateFromTask(Logout, IsAuthenticated);
     }
+
+    [Reactive] private IQBittorrentApi? Api { get; set; }
+
+    public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
 
     public IObservable<bool> IsAuthenticated => _isAuthenticated.DistinctUntilChanged();
 
-    public async Task Login(string username, string password)
+    [Reactive] public string? HostUrl { get; set; }
+
+    [Reactive] public string? Username { get; set; }
+
+    [Reactive] public string? Password { get; set; }
+
+    private async Task Login()
     {
-        await _api.Login(_hostUrl, new Dictionary<string, object>
+        if (string.IsNullOrWhiteSpace(HostUrl))
+            throw new InvalidOperationException($"{nameof(HostUrl)} is not set");
+        if (string.IsNullOrWhiteSpace(Username))
+            throw new InvalidOperationException($"{nameof(Username)} is not set");
+        if (string.IsNullOrWhiteSpace(Password))
+            throw new InvalidOperationException($"{nameof(Password)} is not set");
+
+        Api = RestService.For<IQBittorrentApi>(
+            HostUrl,
+            _refitSettings);
+
+        await Api.Login(HostUrl, new Dictionary<string, object>
         {
-            { "username", username },
-            { "password", password }
+            { "username", Username },
+            { "password", Password }
         });
 
         _isAuthenticated.OnNext(true);
     }
 
-    public async Task Logout()
+    private async Task Logout()
     {
         try
         {
-            await _api.Logout();
+            if (Api is not null)
+                await Api.Logout();
         }
         catch (ApiException apiException)
         {
-            if (apiException.StatusCode != HttpStatusCode.Forbidden)
-                throw;
+            if (apiException.StatusCode == HttpStatusCode.Forbidden)
+                // This can happen when logging out with an invalid session cookie
+                return;
+
+            throw;
         }
 
         _isAuthenticated.OnNext(false);
@@ -65,12 +124,12 @@ public class QBittorrentClient
 
     public async Task<List<QBittorrentTorrent>> GetTorrentList()
     {
-        return await _api.GetTorrentList();
+        return await Api.GetTorrentList();
     }
 
     public async Task<List<string>> GetTorrentPieceHashes(string hash)
     {
-        return await _api.GetTorrentPieceHashes(new Dictionary<string, object>
+        return await Api.GetTorrentPieceHashes(new Dictionary<string, object>
         {
             { "hash", hash }
         });
@@ -78,11 +137,17 @@ public class QBittorrentClient
 
     public async Task<Stream> Export(string hash)
     {
-        var httpContent = await _api.Export(new Dictionary<string, object>
+        var httpContent = await Api.Export(new Dictionary<string, object>
         {
             { "hash", hash }
         });
         await httpContent.LoadIntoBufferAsync();
         return await httpContent.ReadAsStreamAsync();
+    }
+
+    private static bool IsValidHttpUrl(string? url)
+    {
+        return Uri.TryCreate(url, UriKind.Absolute, out var uri) &&
+               (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps);
     }
 }

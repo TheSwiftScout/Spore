@@ -1,8 +1,9 @@
 ﻿using System;
+using Cultivator.Gazelle;
 using Cultivator.Main;
 using ReactiveUI;
 
-namespace Cultivator.Gazelle;
+namespace Cultivator.Login;
 
 public class RedactedLoginViewModel : GazelleLoginViewModelBase
 {

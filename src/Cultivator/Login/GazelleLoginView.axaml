@@ -1,18 +1,19 @@
 <reactiveUi:ReactiveUserControl
-    x:TypeArguments="gazelle:GazelleLoginViewModelBase" xmlns="https://github.com/avaloniaui"
+    x:TypeArguments="login:GazelleLoginViewModelBase" 
+    xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:reactiveUi="http://reactiveui.net"
-    xmlns:gazelle="clr-namespace:Cultivator.Gazelle"
+    xmlns:login="clr-namespace:Cultivator.Login"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-    x:Class="Cultivator.Gazelle.GazelleLoginView">
+    x:Class="Cultivator.Login.GazelleLoginView">
 
     <StackPanel Orientation="Vertical">
         <TextBlock x:Name="Title" FontSize="24" />
         <Label Content="API Key" Target="ApiKey" />
         <TextBox x:Name="ApiKey" PasswordChar="*" />
-        <Button x:Name="LoginButton" Content="Login" Margin="0 5" />
+        <Button x:Name="TestButton" Content="Test" Margin="0 5" />
     </StackPanel>
 
 </reactiveUi:ReactiveUserControl>

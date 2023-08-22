@@ -13,10 +13,7 @@
     <Design.DataContext>
         <main:MainViewModel />
     </Design.DataContext>
-    <StackPanel Orientation="Vertical" Margin="20">
-        <reactiveUi:ViewModelViewHost x:Name="QBittorrentViewHost" />
-        <reactiveUi:ViewModelViewHost x:Name="RedactedLoginHost" />
-        <reactiveUi:ViewModelViewHost x:Name="OrpheusLoginHost" />
-    </StackPanel>
+
+    <reactiveUi:RoutedViewHost x:Name="RouterHost" />
 
 </reactiveUi:ReactiveUserControl>

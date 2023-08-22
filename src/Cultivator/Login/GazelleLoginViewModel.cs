@@ -2,11 +2,12 @@
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
+using Cultivator.Gazelle;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Refit;
 
-namespace Cultivator.Gazelle;
+namespace Cultivator.Login;
 
 public abstract class GazelleLoginViewModelBase : ViewModelBase
 {
@@ -20,11 +21,11 @@ public abstract class GazelleLoginViewModelBase : ViewModelBase
             .Select(apiKey => !string.IsNullOrWhiteSpace(apiKey))
             .DistinctUntilChanged();
 
-        LoginCommand = ReactiveCommand.CreateFromTask(
+        TestCommand = ReactiveCommand.CreateFromTask(
             async () => await Client.SearchTorrent(string.Empty),
             canLogin);
 
-        LoginCommand
+        TestCommand
             .ThrownExceptions
             .Subscribe(exception =>
             {
@@ -42,5 +43,5 @@ public abstract class GazelleLoginViewModelBase : ViewModelBase
 
     public GazelleClient Client { get; }
 
-    public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+    public ReactiveCommand<Unit, Unit> TestCommand { get; }
 }

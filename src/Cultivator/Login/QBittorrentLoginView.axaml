@@ -1,36 +1,35 @@
 <reactiveUi:ReactiveUserControl
-    x:TypeArguments="qBittorrent:QBittorrentViewModel"
+    x:TypeArguments="login:QBittorrentLoginViewModel"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:reactiveUi="http://reactiveui.net"
-    xmlns:qBittorrent="clr-namespace:Cultivator.QBittorrent"
+    xmlns:login="clr-namespace:Cultivator.Login"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-    x:Class="Cultivator.QBittorrent.QBittorrentView">
+    x:Class="Cultivator.Login.QBittorrentLoginView">
 
     <Design.DataContext>
-        <qBittorrent:QBittorrentViewModel />
+        <login:QBittorrentLoginViewModel />
     </Design.DataContext>
 
-    <Grid RowDefinitions="Auto,*">
+    <StackPanel>
 
         <TextBlock FontSize="24" Text="qBittorrent" />
 
-        <StackPanel x:Name="LoginForm" Orientation="Vertical" Grid.Row="1">
+        <StackPanel x:Name="LoginForm" Orientation="Vertical">
             <Label Content="Host URL" Target="HostUrl" />
             <TextBox x:Name="HostUrl" Watermark="http://localhost:39739" />
             <Label Content="Username" Target="Username" />
             <TextBox x:Name="Username" Watermark="admin" />
             <Label Content="Password" Target="Password" />
             <TextBox x:Name="Password" PasswordChar="*" Watermark="adminadmin" />
-                <Button x:Name="LoginButton" Content="Login" Margin="0 5" />
+            <StackPanel Orientation="Horizontal" Margin="0 5">
+                <Button x:Name="LoginButton" Content="Login" />
+                <Button x:Name="LogoutButton" Content="Logout" Margin="5 0 0 0" />
+            </StackPanel>
         </StackPanel>
 
-        <Grid x:Name="TorrentsList" RowDefinitions="*,Auto" Grid.Row="1">
-            <TreeDataGrid x:Name="TorrentsDataGrid" Grid.Row="0" />
-            <Button x:Name="LogoutButton" Content="Logout" Margin="0 5" Grid.Row="1" />
-        </Grid>
-    </Grid>
+    </StackPanel>
 
 </reactiveUi:ReactiveUserControl>

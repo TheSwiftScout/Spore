@@ -5,6 +5,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using Cultivator.Gazelle;
+using Cultivator.Login;
 using Cultivator.Main;
 using Cultivator.QBittorrent;
 using ReactiveUI;
@@ -30,17 +31,19 @@ public class App : Application
         RxApp.SuspensionHost.SetupDefaultSuspendResume(new AkavacheSuspensionDriver<MainState>());
         suspension.OnFrameworkInitializationCompleted();
 
-        var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
-
         SplatRegistrations.SetupIOC();
 
         SplatRegistrations.Register<TransientHttpErrorHandler>();
 
+        var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
         SplatRegistrations.RegisterConstant(mainState);
-        SplatRegistrations.RegisterLazySingleton<MainViewModel>();
 
-        SplatRegistrations.RegisterLazySingleton<QBittorrentClientFactory>();
-        SplatRegistrations.RegisterLazySingleton<QBittorrentViewModelFactory>();
+        SplatRegistrations.RegisterLazySingleton<MainViewModel>();
+        SplatRegistrations.RegisterConstant<IScreen>(Locator.Current.GetRequiredService<MainViewModel>());
+
+        SplatRegistrations.RegisterLazySingleton<LoginViewModel>();
+        SplatRegistrations.RegisterLazySingleton<QBittorrentLoginViewModel>();
+        SplatRegistrations.RegisterLazySingleton<QBittorrentClient>();
 
         SplatRegistrations.Register<GazelleHandlerFactory>();
         SplatRegistrations.Register<GazelleHandler>();

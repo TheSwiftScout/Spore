@@ -2,7 +2,7 @@ using System.Reactive.Disposables;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 
-namespace Cultivator.Gazelle;
+namespace Cultivator.Login;
 
 public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewModelBase>
 {
@@ -16,7 +16,7 @@ public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewMode
                 .DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.ApiKey, v => v.ApiKey.Text)
                 .DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.LoginCommand, v => v.LoginButton)
+            this.BindCommand(ViewModel, vm => vm.TestCommand, v => v.TestButton)
                 .DisposeWith(disposables);
         });
     }
