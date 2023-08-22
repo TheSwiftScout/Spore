@@ -1,20 +1,11 @@
-﻿using System;
-using Cultivator.Gazelle;
-using Cultivator.Main;
-using ReactiveUI;
+﻿using Cultivator.Gazelle;
 
 namespace Cultivator.Login;
 
 public class RedactedLoginViewModel : GazelleLoginViewModelBase
 {
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
-    public RedactedLoginViewModel(MainState state, RedactedClient client) : base(client, "Redacted")
+    public RedactedLoginViewModel(RedactedClient redactedClient) : base("Redacted", redactedClient)
     {
-        ApiKey = state.RedactedApiKey;
-
-        // TODO dispose subscriptions
-
-        this.WhenAnyValue(vm => vm.ApiKey)
-            .Subscribe(apiKey => state.RedactedApiKey = apiKey);
     }
 }

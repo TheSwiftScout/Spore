@@ -5,17 +5,17 @@ namespace Cultivator.Gazelle;
 
 public class GazelleHandlerFactory
 {
-    private readonly MainState _state;
+    private readonly MainState _mainState;
     private readonly TransientHttpErrorHandler _transientHttpErrorHandler;
 
-    public GazelleHandlerFactory(MainState state, TransientHttpErrorHandler transientHttpErrorHandler)
+    public GazelleHandlerFactory(MainState mainState, TransientHttpErrorHandler transientHttpErrorHandler)
     {
-        _state = state;
+        _mainState = mainState;
         _transientHttpErrorHandler = transientHttpErrorHandler;
     }
 
-    public GazelleHandler Create(Func<MainState, string?> getApiTokenFromState)
+    public GazelleHandler Create(Func<MainState, string?> getStateApiKey)
     {
-        return new GazelleHandler(getApiTokenFromState, _state, _transientHttpErrorHandler);
+        return new GazelleHandler(_mainState, getStateApiKey, _transientHttpErrorHandler);
     }
 }

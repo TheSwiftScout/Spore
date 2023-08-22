@@ -9,18 +9,18 @@ namespace Cultivator.Gazelle;
 
 public class GazelleHandler : DelegatingHandler
 {
-    private readonly Func<MainState, string?> _getApiTokenFromState;
-    private readonly MainState _state;
+    private readonly Func<MainState, string?> _getStateApiKey;
     private readonly AsyncPolicy _policy;
+    private readonly MainState _mainState;
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
     public GazelleHandler(
-        Func<MainState, string?> getApiTokenFromState,
-        MainState state,
+        MainState mainState,
+        Func<MainState, string?> getStateApiKey,
         TransientHttpErrorHandler transientHttpErrorHandler) : base(transientHttpErrorHandler)
     {
-        _getApiTokenFromState = getApiTokenFromState;
-        _state = state;
+        _mainState = mainState;
+        _getStateApiKey = getStateApiKey;
         // TODO make configurable
         _policy = Policy.RateLimitAsync(10, TimeSpan.FromSeconds(10));
     }
@@ -29,11 +29,12 @@ public class GazelleHandler : DelegatingHandler
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        var apiToken = _getApiTokenFromState(_state);
+        var apiKey = _getStateApiKey(_mainState);
 
-        if (string.IsNullOrWhiteSpace(apiToken))
-            throw new InvalidOperationException("Gazelle API Token is required");
-        request.Headers.Add("Authorization", apiToken);
+        if (string.IsNullOrWhiteSpace(apiKey))
+            throw new InvalidOperationException("Gazelle API Key is required");
+
+        request.Headers.Add("Authorization", apiKey);
 
         return await _policy.ExecuteAsync(
             async innerCancellationToken => await base.SendAsync(request, innerCancellationToken),

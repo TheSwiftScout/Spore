@@ -1,20 +1,11 @@
-﻿using System;
-using Cultivator.Gazelle;
-using Cultivator.Main;
-using ReactiveUI;
+﻿using Cultivator.Gazelle;
 
 namespace Cultivator.Login;
 
 public class OrpheusLoginViewModel : GazelleLoginViewModelBase
 {
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-    public OrpheusLoginViewModel(MainState state, OrpheusClient orpheusClient) : base(orpheusClient, "Orpheus")
+    public OrpheusLoginViewModel(OrpheusClient orpheusClient) : base("Orpheus", orpheusClient)
     {
-        ApiKey = state.OrpheusApiKey;
-
-        // TODO dispose subscriptions
-
-        this.WhenAnyValue(vm => vm.ApiKey)
-            .Subscribe(apiKey => state.OrpheusApiKey = apiKey);
     }
 }

@@ -10,8 +10,9 @@ public class MainViewModel : ViewModelBase, IScreen
     private readonly ReactiveCommand<Unit, IRoutableViewModel> _openLoginCommand;
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
-    public MainViewModel(LoginViewModel loginViewModel)
+    public MainViewModel(LoginViewModel loginViewModel, LoginStatusBarViewModel loginStatusBarViewModel)
     {
+        LoginStatusBarViewModel = loginStatusBarViewModel;
         _openLoginCommand = ReactiveCommand.CreateFromObservable(() =>
             Router.NavigateAndReset.Execute(loginViewModel));
 
@@ -19,6 +20,8 @@ public class MainViewModel : ViewModelBase, IScreen
             .Select(_ => Unit.Default)
             .InvokeCommand(_openLoginCommand);
     }
+
+    public LoginStatusBarViewModel LoginStatusBarViewModel { get; }
 
     public RoutingState Router { get; } = new();
 }

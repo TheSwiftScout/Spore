@@ -25,8 +25,7 @@ public partial class QBittorrentLoginView : ReactiveUserControl<QBittorrentLogin
                 .DisposeWith(disposables);
 
             var isNotAuthenticated = this
-                .WhenAnyValue(v => v.ViewModel.QBittorrentClient.IsAuthenticated)
-                .SelectMany(auth => auth)
+                .WhenAnyObservable(v => v.ViewModel.QBittorrentClient.IsAuthenticated)
                 .Select(auth => !auth);
             isNotAuthenticated
                 .BindTo(this, v => v.HostUrl.IsEnabled)

@@ -14,9 +14,9 @@ public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewMode
         {
             this.OneWayBind(ViewModel, vm => vm.Title, v => v.Title.Text)
                 .DisposeWith(disposables);
-            this.Bind(ViewModel, vm => vm.ApiKey, v => v.ApiKey.Text)
+            this.Bind(ViewModel, vm => vm.GazelleClient.ApiKey, v => v.ApiKey.Text)
                 .DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.TestCommand, v => v.TestButton)
+            this.BindCommand(ViewModel, vm => vm.GazelleClient.LoginCommand, v => v.TestButton)
                 .DisposeWith(disposables);
         });
     }

@@ -44,6 +44,7 @@ public class App : Application
         SplatRegistrations.RegisterLazySingleton<LoginViewModel>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentLoginViewModel>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentClient>();
+        SplatRegistrations.RegisterLazySingleton<LoginStatusBarViewModel>();
 
         SplatRegistrations.Register<GazelleHandlerFactory>();
         SplatRegistrations.Register<GazelleHandler>();

@@ -32,23 +32,23 @@ public class QBittorrentClient : ReactiveObject
                 })
         };
 
-        var state = mainState.QBittorrentState;
+        var loginState = mainState.LoginState;
 
-        HostUrl = state.HostUrl;
-        Username = state.Username;
-        Password = state.Password;
+        HostUrl = loginState.QBittorrentHostUrl;
+        Username = loginState.QBittorrentUsername;
+        Password = loginState.QBittorrentPassword;
 
         this.WhenAnyValue(c => c.HostUrl)
             .DistinctUntilChanged()
-            .Subscribe(hostUrl => state.HostUrl = hostUrl);
+            .Subscribe(hostUrl => loginState.QBittorrentHostUrl = hostUrl);
 
         this.WhenAnyValue(c => c.Username)
             .DistinctUntilChanged()
-            .Subscribe(username => state.Username = username);
+            .Subscribe(username => loginState.QBittorrentUsername = username);
 
         this.WhenAnyValue(c => c.Password)
             .DistinctUntilChanged()
-            .Subscribe(password => state.Password = password);
+            .Subscribe(password => loginState.QBittorrentPassword = password);
 
         var canLogin = this
             .WhenAnyValue(

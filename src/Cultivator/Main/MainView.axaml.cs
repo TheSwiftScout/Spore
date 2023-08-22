@@ -14,6 +14,8 @@ public partial class MainView : ReactiveUserControl<MainViewModel>
         {
             this.OneWayBind(ViewModel, vm => vm.Router, v => v.RouterHost.Router)
                 .DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.LoginStatusBarViewModel, v => v.LoginStatusBarHost.ViewModel)
+                .DisposeWith(disposables);
         });
     }
 }
