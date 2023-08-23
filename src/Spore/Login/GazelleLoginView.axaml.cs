@@ -23,7 +23,19 @@ public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewMode
             this.Bind(ViewModel, vm => vm.GazelleClient.ApiKey, v => v.ApiKey.Text)
                 .DisposeWith(disposables);
 
-            this.BindCommand(ViewModel, vm => vm.GazelleClient.LoginCommand, v => v.TestButton)
+            var isNotAuthenticated = this
+                .WhenAnyObservable(v => v.ViewModel.GazelleClient.IsAuthenticated)
+                .Select(auth => !auth);
+            var isNotLoggingIn = this
+                .WhenAnyObservable(v => v.ViewModel.GazelleClient.LoginCommand.IsExecuting)
+                .Select(isLoggingIn => !isLoggingIn);
+            var formEnabled = isNotAuthenticated
+                .CombineLatest(isNotLoggingIn, (notAuth, notLoggingIn) => notAuth && notLoggingIn);
+            formEnabled
+                .BindTo(this, v => v.ApiKey.IsEnabled)
+                .DisposeWith(disposables);
+
+            this.BindCommand(ViewModel, vm => vm.GazelleClient.LoginCommand, v => v.LoginButton)
                 .DisposeWith(disposables);
         });
     }

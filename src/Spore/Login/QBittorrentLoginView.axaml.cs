@@ -34,13 +34,18 @@ public partial class QBittorrentLoginView : ReactiveUserControl<QBittorrentLogin
             var isNotAuthenticated = this
                 .WhenAnyObservable(v => v.ViewModel.QBittorrentClient.IsAuthenticated)
                 .Select(auth => !auth);
-            isNotAuthenticated
+            var isNotLoggingIn = this
+                .WhenAnyObservable(v => v.ViewModel.QBittorrentClient.LoginCommand.IsExecuting)
+                .Select(isLoggingIn => !isLoggingIn);
+            var formEnabled = isNotAuthenticated
+                .CombineLatest(isNotLoggingIn, (notAuth, notLoggingIn) => notAuth && notLoggingIn);
+            formEnabled
                 .BindTo(this, v => v.HostUrl.IsEnabled)
                 .DisposeWith(disposables);
-            isNotAuthenticated
+            formEnabled
                 .BindTo(this, v => v.Username.IsEnabled)
                 .DisposeWith(disposables);
-            isNotAuthenticated
+            formEnabled
                 .BindTo(this, v => v.Password.IsEnabled)
                 .DisposeWith(disposables);
 

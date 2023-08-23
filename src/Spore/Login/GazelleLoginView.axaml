@@ -13,7 +13,7 @@
         <TextBlock x:Name="Title" FontSize="24" />
         <Label Content="API Key" Target="ApiKey" />
         <TextBox x:Name="ApiKey" PasswordChar="*" />
-        <Button x:Name="TestButton" Content="Test" Margin="0 5" />
+        <Button x:Name="LoginButton" Content="Login" Margin="0 5" />
     </StackPanel>
 
 </reactiveUi:ReactiveUserControl>
