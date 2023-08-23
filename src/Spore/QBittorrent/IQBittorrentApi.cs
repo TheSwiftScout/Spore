@@ -29,10 +29,10 @@ public interface IQBittorrentApi
     // Torrent Management
 
     [Get("/api/v2/torrents/info")]
-    Task<List<QBittorrentTorrent>> GetTorrentList();
+    Task<IEnumerable<QBittorrentTorrent>> GetTorrentList();
 
     [Post("/api/v2/torrents/pieceHashes")]
-    Task<List<string>> GetTorrentPieceHashes(
+    Task<IEnumerable<string>> GetTorrentPieceHashes(
         [Body(BodySerializationMethod.UrlEncoded)]
         Dictionary<string, object> data);
 

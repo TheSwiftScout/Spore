@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -65,6 +66,8 @@ public class QBittorrentClient : ReactiveObject
 
         LoginCommand = ReactiveCommand.CreateFromTask(Login, canLogin);
         LogoutCommand = ReactiveCommand.CreateFromTask(Logout, IsAuthenticated);
+        GetTorrentListCommand = ReactiveCommand.CreateFromTask(GetTorrentList, IsAuthenticated);
+        ExportCommand = ReactiveCommand.CreateFromTask((string hash) => Export(hash), IsAuthenticated);
     }
 
     [Reactive] private IQBittorrentApi? Api { get; set; }
@@ -72,6 +75,10 @@ public class QBittorrentClient : ReactiveObject
     public ReactiveCommand<Unit, Unit> LoginCommand { get; }
 
     public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
+
+    public ReactiveCommand<Unit, IReadOnlyCollection<QBittorrentTorrent>> GetTorrentListCommand { get; }
+
+    public ReactiveCommand<string, Stream> ExportCommand { get; }
 
     public IObservable<bool> IsAuthenticated => _isAuthenticated.DistinctUntilChanged();
 
@@ -84,11 +91,11 @@ public class QBittorrentClient : ReactiveObject
     private async Task Login()
     {
         if (string.IsNullOrWhiteSpace(HostUrl))
-            throw new InvalidOperationException($"{nameof(HostUrl)} is not set");
+            throw new InvalidOperationException($"The {nameof(HostUrl)} must be set to be able to log in.");
         if (string.IsNullOrWhiteSpace(Username))
-            throw new InvalidOperationException($"{nameof(Username)} is not set");
+            throw new InvalidOperationException($"The {nameof(Username)} must be set to be able to log in.");
         if (string.IsNullOrWhiteSpace(Password))
-            throw new InvalidOperationException($"{nameof(Password)} is not set");
+            throw new InvalidOperationException($"The {nameof(Password)} must be set to be able to log in.");
 
         Api = RestService.For<IQBittorrentApi>(
             HostUrl,
@@ -122,20 +129,23 @@ public class QBittorrentClient : ReactiveObject
         _isAuthenticated.OnNext(false);
     }
 
-    public async Task<List<QBittorrentTorrent>> GetTorrentList()
+    private async Task<IReadOnlyCollection<QBittorrentTorrent>> GetTorrentList()
     {
-        return await Api.GetTorrentList();
+        var torrentList = await Api.GetTorrentList();
+        return torrentList.ToList();
     }
 
     public async Task<List<string>> GetTorrentPieceHashes(string hash)
     {
-        return await Api.GetTorrentPieceHashes(new Dictionary<string, object>
+        var pieceHashes = await Api.GetTorrentPieceHashes(new Dictionary<string, object>
         {
             { "hash", hash }
         });
+
+        return pieceHashes.ToList();
     }
 
-    public async Task<Stream> Export(string hash)
+    private async Task<Stream> Export(string hash)
     {
         var httpContent = await Api.Export(new Dictionary<string, object>
         {

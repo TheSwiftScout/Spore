@@ -32,7 +32,8 @@ public class GazelleHandler : DelegatingHandler
         var apiKey = _getStateApiKey(_mainState);
 
         if (string.IsNullOrWhiteSpace(apiKey))
-            throw new InvalidOperationException("Gazelle API Key is required");
+            throw new InvalidOperationException(
+                "Retrieving the API key from the app state failed. Log in to provide an API key.");
 
         request.Headers.Add("Authorization", apiKey);
 
