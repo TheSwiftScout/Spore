@@ -38,7 +38,7 @@ public class TransientHttpErrorHandler : DelegatingHandler
         CancellationToken cancellationToken)
     {
         return await _policy.ExecuteAsync(
-            async innerCancellationToken => await base.SendAsync(request, innerCancellationToken),
+            async innerCancellationToken => await base.SendAsync(request, innerCancellationToken).ConfigureAwait(false),
             cancellationToken);
     }
 }

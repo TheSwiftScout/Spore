@@ -37,7 +37,7 @@ public class GazelleHandler : DelegatingHandler
         request.Headers.Add("Authorization", apiKey);
 
         return await _policy.ExecuteAsync(
-            async innerCancellationToken => await base.SendAsync(request, innerCancellationToken),
+            async innerCancellationToken => await base.SendAsync(request, innerCancellationToken).ConfigureAwait(false),
             cancellationToken);
     }
 }
