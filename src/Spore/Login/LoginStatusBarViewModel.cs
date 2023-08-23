@@ -1,9 +1,10 @@
-﻿using Spore.Gazelle;
+﻿using ReactiveUI;
+using Spore.Gazelle;
 using Spore.QBittorrent;
 
 namespace Spore.Login;
 
-public class LoginStatusBarViewModel : ViewModelBase
+public class LoginStatusBarViewModel : ReactiveObject
 {
     public LoginStatusBarViewModel(
         QBittorrentClient qBittorrentClient,

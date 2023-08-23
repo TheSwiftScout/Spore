@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:reactiveUi="http://reactiveui.net"
     xmlns:main="clr-namespace:Spore.Main"
+    xmlns:spore="clr-namespace:Spore"
     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
     x:Class="Spore.Main.MainView"
     x:DataType="main:MainViewModel">
@@ -15,8 +16,21 @@
     </Design.DataContext>
 
     <Grid RowDefinitions="*,Auto">
-        <reactiveUi:RoutedViewHost x:Name="RouterHost" />
+
+        <Grid ColumnDefinitions="300, 4, *">
+            <ListBox x:Name="NavigationMenu" SelectionMode="Single">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="spore:RoutableViewModelBase">
+                        <TextBlock Text="{Binding Title}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns"/>
+            <reactiveUi:RoutedViewHost x:Name="RouterHost" Grid.Column="2" Margin="20" />
+        </Grid>
+
         <reactiveUi:ViewModelViewHost x:Name="LoginStatusBarHost" HorizontalAlignment="Right" Grid.Row="1" />
+
     </Grid>
 
 </reactiveUi:ReactiveUserControl>

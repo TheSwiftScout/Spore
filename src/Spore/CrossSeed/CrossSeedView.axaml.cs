@@ -4,11 +4,11 @@ using System.Reactive.Linq;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 
-namespace Spore.Login;
+namespace Spore.CrossSeed;
 
-public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewModelBase>
+public partial class CrossSeedView : ReactiveUserControl<CrossSeedViewModel>
 {
-    public GazelleLoginView()
+    public CrossSeedView()
     {
         InitializeComponent();
 
@@ -18,12 +18,6 @@ public partial class GazelleLoginView : ReactiveUserControl<GazelleLoginViewMode
                 .WhereNotNull()
                 .Do(vm => Title.Text = vm.Title)
                 .Subscribe()
-                .DisposeWith(disposables);
-
-            this.Bind(ViewModel, vm => vm.GazelleClient.ApiKey, v => v.ApiKey.Text)
-                .DisposeWith(disposables);
-
-            this.BindCommand(ViewModel, vm => vm.GazelleClient.LoginCommand, v => v.TestButton)
                 .DisposeWith(disposables);
         });
     }

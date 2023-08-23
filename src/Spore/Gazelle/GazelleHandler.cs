@@ -2,16 +2,16 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Spore.Main;
 using Polly;
+using Spore.Main;
 
 namespace Spore.Gazelle;
 
 public class GazelleHandler : DelegatingHandler
 {
     private readonly Func<MainState, string?> _getStateApiKey;
-    private readonly AsyncPolicy _policy;
     private readonly MainState _mainState;
+    private readonly AsyncPolicy _policy;
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
     public GazelleHandler(

@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -17,6 +18,12 @@ public partial class QBittorrentLoginView : ReactiveUserControl<QBittorrentLogin
 
         this.WhenActivated(disposables =>
         {
+            this.WhenAnyValue(v => v.ViewModel)
+                .WhereNotNull()
+                .Do(vm => Title.Text = vm.Title)
+                .Subscribe()
+                .DisposeWith(disposables);
+
             this.Bind(ViewModel, vm => vm.QBittorrentClient.HostUrl, v => v.HostUrl.Text)
                 .DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.QBittorrentClient.Username, v => v.Username.Text)
@@ -48,7 +55,8 @@ public partial class QBittorrentLoginView : ReactiveUserControl<QBittorrentLogin
                 .KeyUp
                 .Where(e => e.Key == Key.Enter)
                 .Select(_ => Unit.Default)
-                .InvokeCommand(ViewModel.QBittorrentClient.LoginCommand);
+                .InvokeCommand(ViewModel, vm => vm.QBittorrentClient.LoginCommand)
+                .DisposeWith(disposables);
         });
     }
 }

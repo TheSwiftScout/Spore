@@ -1,16 +1,20 @@
-﻿using Spore.Gazelle;
+﻿using System.Reactive;
+using System.Reactive.Linq;
+using ReactiveUI;
+using Spore.Gazelle;
 
 namespace Spore.Login;
 
 public abstract class GazelleLoginViewModelBase : ViewModelBase
 {
-    protected GazelleLoginViewModelBase(string title, GazelleClientBase gazelleClient)
+    protected GazelleLoginViewModelBase(GazelleClientBase gazelleClient)
     {
-        Title = title;
         GazelleClient = gazelleClient;
-    }
 
-    public string Title { get; }
+        this.WhenAnyValue(vm => vm.GazelleClient)
+            .Select(_ => Unit.Default)
+            .InvokeCommand(GazelleClient.LoginCommand);
+    }
 
     public GazelleClientBase GazelleClient { get; }
 }

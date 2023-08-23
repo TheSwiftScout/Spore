@@ -1,27 +1,60 @@
-﻿using System.Reactive;
-using System.Reactive.Linq;
-using Spore.Login;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using Spore.CrossSeed;
+using Spore.Login;
 
 namespace Spore.Main;
 
 public class MainViewModel : ViewModelBase, IScreen
 {
-    private readonly ReactiveCommand<Unit, IRoutableViewModel> _openLoginCommand;
+    private readonly IObservable<bool> _isFullyAuthenticated;
 
-    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
-    public MainViewModel(LoginViewModel loginViewModel, LoginStatusBarViewModel loginStatusBarViewModel)
+    public MainViewModel(
+        // ReSharper disable SuggestBaseTypeForParameterInConstructor (DI)
+        LoginViewModel loginViewModel,
+        CrossSeedViewModel crossSeedViewModel,
+        // ReSharper restore SuggestBaseTypeForParameterInConstructor
+        LoginStatusBarViewModel loginStatusBarViewModel)
     {
-        LoginStatusBarViewModel = loginStatusBarViewModel;
-        _openLoginCommand = ReactiveCommand.CreateFromObservable(() =>
-            Router.NavigateAndReset.Execute(loginViewModel));
+        Routes = new List<RoutableViewModelBase>
+        {
+            loginViewModel,
+            crossSeedViewModel
+        };
 
-        this.WhenAnyValue(vm => vm._openLoginCommand)
-            .Select(_ => Unit.Default)
-            .InvokeCommand(_openLoginCommand);
+        LoginStatusBarViewModel = loginStatusBarViewModel;
+
+        _isFullyAuthenticated = loginViewModel.IsFullyAuthenticated;
+
+        // TODO dispose subscription
+        this.WhenAnyValue(vm => vm.SelectedRoute)
+            .WhereNotNull()
+            .InvokeCommand<IRoutableViewModel, RoutingState>(Router, router => router.Navigate);
+
+        this.WhenAnyObservable(vm => vm._isFullyAuthenticated)
+            .Subscribe(isFullyAuthenticated =>
+            {
+                if (isFullyAuthenticated)
+                {
+                    // skip login view
+                    SelectedRoute = Routes.First(route => route != loginViewModel);
+                    return;
+                }
+
+                SelectedRoute = loginViewModel;
+            });
     }
 
+    public IReadOnlyCollection<RoutableViewModelBase> Routes { get; }
+
+    [Reactive] public RoutableViewModelBase? SelectedRoute { get; set; }
+
     public LoginStatusBarViewModel LoginStatusBarViewModel { get; }
+
+    public override string Title => "Spore";
 
     public RoutingState Router { get; } = new();
 }

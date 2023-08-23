@@ -5,7 +5,9 @@ namespace Spore.Login;
 public class OrpheusLoginViewModel : GazelleLoginViewModelBase
 {
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-    public OrpheusLoginViewModel(OrpheusClient orpheusClient) : base("Orpheus", orpheusClient)
+    public OrpheusLoginViewModel(OrpheusClient orpheusClient) : base(orpheusClient)
     {
     }
+
+    public override string Title => "Orpheus";
 }

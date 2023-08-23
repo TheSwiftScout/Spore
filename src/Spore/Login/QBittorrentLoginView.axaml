@@ -15,7 +15,7 @@
 
     <StackPanel>
 
-        <TextBlock FontSize="24" Text="qBittorrent" />
+        <TextBlock x:Name="Title" FontSize="24" />
 
         <StackPanel x:Name="LoginForm" Orientation="Vertical">
             <Label Content="Host URL" Target="HostUrl" />

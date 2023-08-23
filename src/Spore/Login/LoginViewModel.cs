@@ -1,25 +1,37 @@
-﻿using ReactiveUI;
+﻿using System;
+using System.Reactive.Linq;
+using ReactiveUI;
 
 namespace Spore.Login;
 
-public class LoginViewModel : ViewModelBase, IRoutableViewModel
+public class LoginViewModel : RoutableViewModelBase
 {
     public LoginViewModel(
         IScreen hostScreen,
         QBittorrentLoginViewModel qBittorrentLoginViewModel,
         RedactedLoginViewModel redactedLoginViewModel,
-        OrpheusLoginViewModel orpheusLoginViewModel)
+        OrpheusLoginViewModel orpheusLoginViewModel) : base(hostScreen)
     {
-        HostScreen = hostScreen;
         QBittorrentLoginViewModel = qBittorrentLoginViewModel;
         RedactedLoginViewModel = redactedLoginViewModel;
         OrpheusLoginViewModel = orpheusLoginViewModel;
+
+        IsFullyAuthenticated = this
+            .WhenAnyObservable(
+                vm => vm.QBittorrentLoginViewModel.QBittorrentClient.IsAuthenticated,
+                vm => vm.RedactedLoginViewModel.GazelleClient.IsAuthenticated,
+                vm => vm.OrpheusLoginViewModel.GazelleClient.IsAuthenticated,
+                (qBittorrentAuth, redactedAuth, orpheusAuth) => qBittorrentAuth && redactedAuth && orpheusAuth)
+            .DistinctUntilChanged();
     }
+
+    public IObservable<bool> IsFullyAuthenticated { get; }
 
     public QBittorrentLoginViewModel QBittorrentLoginViewModel { get; }
     public RedactedLoginViewModel RedactedLoginViewModel { get; }
     public OrpheusLoginViewModel OrpheusLoginViewModel { get; }
 
-    public string UrlPathSegment => nameof(LoginViewModel);
-    public IScreen HostScreen { get; }
+    public override string Title => "Login";
+
+    public override string UrlPathSegment => nameof(LoginViewModel);
 }

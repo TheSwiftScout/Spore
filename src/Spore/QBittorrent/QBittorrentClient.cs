@@ -7,10 +7,10 @@ using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Spore.Main;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using Refit;
+using Spore.Main;
 
 namespace Spore.QBittorrent;
 

@@ -4,12 +4,13 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using ReactiveUI;
+using Splat;
+using Spore.CrossSeed;
 using Spore.Gazelle;
 using Spore.Login;
 using Spore.Main;
 using Spore.QBittorrent;
-using ReactiveUI;
-using Splat;
 
 namespace Spore;
 
@@ -45,6 +46,8 @@ public class App : Application
         SplatRegistrations.RegisterLazySingleton<QBittorrentLoginViewModel>();
         SplatRegistrations.RegisterLazySingleton<QBittorrentClient>();
         SplatRegistrations.RegisterLazySingleton<LoginStatusBarViewModel>();
+
+        SplatRegistrations.RegisterLazySingleton<CrossSeedViewModel>();
 
         SplatRegistrations.Register<GazelleHandlerFactory>();
         SplatRegistrations.Register<GazelleHandler>();

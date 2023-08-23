@@ -2,6 +2,7 @@
 
 namespace Spore;
 
-public class ViewModelBase : ReactiveObject
+public abstract class ViewModelBase : ReactiveObject
 {
+    public abstract string Title { get; }
 }
