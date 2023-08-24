@@ -22,7 +22,7 @@ public class GazelleHandler : DelegatingHandler
         _mainState = mainState;
         _getStateApiKey = getStateApiKey;
         // TODO make configurable
-        _policy = Policy.RateLimitAsync(10, TimeSpan.FromSeconds(10));
+        _policy = Policy.RateLimitAsync(5, TimeSpan.FromSeconds(10), maxBurst: 3);
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(

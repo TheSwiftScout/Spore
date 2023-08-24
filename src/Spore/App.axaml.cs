@@ -50,7 +50,6 @@ public class App : Application
         SplatRegistrations.RegisterLazySingleton<CrossSeedViewModel>();
 
         SplatRegistrations.Register<GazelleHandlerFactory>();
-        SplatRegistrations.Register<GazelleHandler>();
 
         SplatRegistrations.RegisterLazySingleton<RedactedClient>();
         SplatRegistrations.RegisterLazySingleton<RedactedLoginViewModel>();

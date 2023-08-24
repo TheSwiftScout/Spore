@@ -19,6 +19,8 @@ public partial class CrossSeedView : ReactiveUserControl<CrossSeedViewModel>
                 .Do(vm => Title.Text = vm.Title)
                 .Subscribe()
                 .DisposeWith(disposables);
+
+            this.BindCommand(ViewModel, vm => vm.SearchCommand, v => v.Search);
         });
     }
 }

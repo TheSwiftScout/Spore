@@ -22,6 +22,8 @@ public class TransientHttpErrorHandler : DelegatingHandler
             .DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 50)
             .Select(delay => TimeSpan.FromTicks(Math.Min(delay.Ticks, maxDelay.Ticks)));
 
+        var bulkhead = Policy.BulkheadAsync<HttpResponseMessage>(3, 25000);
+
         var retryPolicy = HttpPolicyExtensions
             .HandleTransientHttpError()
             .WaitAndRetryAsync(delay);
@@ -30,7 +32,7 @@ public class TransientHttpErrorHandler : DelegatingHandler
             .HandleTransientHttpError()
             .CircuitBreakerAsync(5, TimeSpan.FromMinutes(1));
 
-        _policy = Policy.WrapAsync(retryPolicy, circuitBreaker);
+        _policy = Policy.WrapAsync(bulkhead, retryPolicy, circuitBreaker);
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(

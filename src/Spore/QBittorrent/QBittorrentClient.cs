@@ -67,7 +67,7 @@ public class QBittorrentClient : ReactiveObject
         LoginCommand = ReactiveCommand.CreateFromTask(Login, canLogin);
         LogoutCommand = ReactiveCommand.CreateFromTask(Logout, IsAuthenticated);
         GetTorrentListCommand = ReactiveCommand.CreateFromTask(GetTorrentList, IsAuthenticated);
-        ExportCommand = ReactiveCommand.CreateFromTask((string hash) => Export(hash), IsAuthenticated);
+        ExportCommand = ReactiveCommand.CreateFromTask(async (string hash) => await Export(hash));
     }
 
     [Reactive] private IQBittorrentApi? Api { get; set; }
@@ -147,12 +147,20 @@ public class QBittorrentClient : ReactiveObject
 
     private async Task<Stream> Export(string hash)
     {
-        var httpContent = await Api.Export(new Dictionary<string, object>
-        {
-            { "hash", hash }
-        });
-        await httpContent.LoadIntoBufferAsync();
-        return await httpContent.ReadAsStreamAsync();
+        var httpContent = await Api
+            .Export(new Dictionary<string, object>
+            {
+                { "hash", hash }
+            })
+            .ConfigureAwait(false);
+
+        await httpContent
+            .LoadIntoBufferAsync()
+            .ConfigureAwait(false);
+
+        return await httpContent
+            .ReadAsStreamAsync()
+            .ConfigureAwait(false);
     }
 
     private static bool IsValidHttpUrl(string? url)
