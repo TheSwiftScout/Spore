@@ -11,20 +11,37 @@ using Spore.Main;
 
 namespace Spore.Gazelle;
 
+public class GazelleClientConfigurationBase : IDefaultHttpHandlerConfiguration
+{
+    public GazelleClientConfigurationBase(
+        string apiUrl,
+        string trackerUrl,
+        string sourceFlag,
+        RequestPoliciesConfiguration? requestPolicies)
+    {
+        ApiUrl = apiUrl;
+        TrackerUrl = trackerUrl;
+        SourceFlag = sourceFlag;
+        RequestPolicies = requestPolicies ?? new RequestPoliciesConfiguration();
+    }
+
+    public string ApiUrl { get; }
+    public string TrackerUrl { get; }
+    public string SourceFlag { get; }
+    public RequestPoliciesConfiguration RequestPolicies { get; }
+}
+
 public abstract class GazelleClientBase : ReactiveObject
 {
     private readonly IGazelleApi _api;
     private readonly BehaviorSubject<bool> _isAuthenticated = new(false);
 
     protected GazelleClientBase(
-        string trackerUrl,
+        GazelleClientConfigurationBase clientConfiguration,
         MainState mainState,
         Func<MainState, string?> getStateApiKey,
-        Action<MainState, string?> setStateApiKey,
-        GazelleHandlerFactory gazelleHandlerFactory)
+        Action<MainState, string?> setStateApiKey)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(trackerUrl, nameof(trackerUrl));
-
         ApiKey = getStateApiKey(mainState);
 
         this.WhenAnyValue(vm => vm.ApiKey)
@@ -35,10 +52,14 @@ public abstract class GazelleClientBase : ReactiveObject
             });
 
         _api = RestService.For<IGazelleApi>(
-            trackerUrl,
+            clientConfiguration.ApiUrl,
             new RefitSettings
             {
-                HttpMessageHandlerFactory = () => gazelleHandlerFactory.Create(getStateApiKey)
+                HttpMessageHandlerFactory = () =>
+                    new GazelleHandler(
+                        mainState,
+                        getStateApiKey,
+                        new DefaultHttpHandler(clientConfiguration.RequestPolicies))
             });
 
         var canLogin = this

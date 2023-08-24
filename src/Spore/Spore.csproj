@@ -13,6 +13,9 @@
     <ItemGroup>
         <PackageReference Include="akavache" Version="9.1.20" />
         <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="7.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0-preview.7.23375.6" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
         <PackageReference Include="MonoTorrent" Version="2.0.7" />
         <PackageReference Include="Polly" Version="7.2.4" />
         <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
@@ -37,6 +40,12 @@
         <PackageReference Include="ReactiveUI.Fody" Version="$(ReactiveUIVersion)" />
         <PackageReference Include="Splat" Version="$(SplatVersion)" />
         <PackageReference Include="Splat.DependencyInjection.SourceGenerator" Version="$(SplatSourceGeneratorVersion)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <!-- ReSharper restore UnknownProperty -->

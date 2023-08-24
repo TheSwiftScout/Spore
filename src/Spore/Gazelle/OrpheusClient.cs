@@ -2,15 +2,26 @@
 
 namespace Spore.Gazelle;
 
+public class OrpheusClientConfiguration : GazelleClientConfigurationBase
+{
+    public OrpheusClientConfiguration(
+        string apiUrl,
+        string trackerUrl,
+        string sourceFlag,
+        RequestPoliciesConfiguration? requestPolicies = null) : base(apiUrl, trackerUrl, sourceFlag, requestPolicies)
+    {
+    }
+}
+
 public class OrpheusClient : GazelleClientBase
 {
-    public OrpheusClient(MainState mainState, GazelleHandlerFactory gazelleHandlerFactory)
+    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
+    public OrpheusClient(OrpheusClientConfiguration clientConfiguration, MainState mainState)
         : base(
-            "https://<tracker-url>",
+            clientConfiguration,
             mainState,
             state => state.LoginState.OrpheusApiKey,
-            (state, apiKey) => state.LoginState.OrpheusApiKey = apiKey,
-            gazelleHandlerFactory)
+            (state, apiKey) => state.LoginState.OrpheusApiKey = apiKey)
     {
     }
 }

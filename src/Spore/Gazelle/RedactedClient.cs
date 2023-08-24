@@ -2,15 +2,26 @@
 
 namespace Spore.Gazelle;
 
+public class RedactedClientConfiguration : GazelleClientConfigurationBase
+{
+    public RedactedClientConfiguration(
+        string apiUrl,
+        string trackerUrl,
+        string sourceFlag,
+        RequestPoliciesConfiguration? requestPolicies = null) : base(apiUrl, trackerUrl, sourceFlag, requestPolicies)
+    {
+    }
+}
+
 public class RedactedClient : GazelleClientBase
 {
-    public RedactedClient(MainState mainState, GazelleHandlerFactory gazelleHandlerFactory)
+    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
+    public RedactedClient(RedactedClientConfiguration clientConfiguration, MainState mainState)
         : base(
-            "https://<tracker-url>",
+            clientConfiguration,
             mainState,
             state => state.LoginState.RedactedApiKey,
-            (state, apiKey) => state.LoginState.RedactedApiKey = apiKey,
-            gazelleHandlerFactory)
+            (state, apiKey) => state.LoginState.RedactedApiKey = apiKey)
     {
     }
 }

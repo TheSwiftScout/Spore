@@ -15,17 +15,27 @@ using Spore.Main;
 
 namespace Spore.QBittorrent;
 
+public class QBittorrentClientConfiguration : IDefaultHttpHandlerConfiguration
+{
+    public QBittorrentClientConfiguration(RequestPoliciesConfiguration? requestPolicies = null)
+    {
+        RequestPolicies = requestPolicies ?? new RequestPoliciesConfiguration();
+    }
+
+    public RequestPoliciesConfiguration RequestPolicies { get; }
+}
+
 public class QBittorrentClient : ReactiveObject
 {
     private readonly BehaviorSubject<bool> _isAuthenticated = new(false);
     private readonly RefitSettings _refitSettings;
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
-    public QBittorrentClient(MainState mainState, TransientHttpErrorHandler transientHttpErrorHandler)
+    public QBittorrentClient(QBittorrentClientConfiguration clientConfiguration, MainState mainState)
     {
         _refitSettings = new RefitSettings
         {
-            HttpMessageHandlerFactory = () => transientHttpErrorHandler,
+            HttpMessageHandlerFactory = () => new DefaultHttpHandler(clientConfiguration.RequestPolicies),
             ContentSerializer = new SystemTextJsonContentSerializer(
                 new JsonSerializerOptions
                 {
@@ -97,9 +107,7 @@ public class QBittorrentClient : ReactiveObject
         if (string.IsNullOrWhiteSpace(Password))
             throw new InvalidOperationException($"The {nameof(Password)} must be set to be able to log in.");
 
-        Api = RestService.For<IQBittorrentApi>(
-            HostUrl,
-            _refitSettings);
+        Api = RestService.For<IQBittorrentApi>(HostUrl, _refitSettings);
 
         await Api.Login(HostUrl, new Dictionary<string, object>
         {

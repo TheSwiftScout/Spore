@@ -2,7 +2,6 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Polly;
 using Spore.Main;
 
 namespace Spore.Gazelle;
@@ -11,18 +10,14 @@ public class GazelleHandler : DelegatingHandler
 {
     private readonly Func<MainState, string?> _getStateApiKey;
     private readonly MainState _mainState;
-    private readonly AsyncPolicy _policy;
 
-    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
     public GazelleHandler(
         MainState mainState,
         Func<MainState, string?> getStateApiKey,
-        TransientHttpErrorHandler transientHttpErrorHandler) : base(transientHttpErrorHandler)
+        HttpMessageHandler innerHandler) : base(innerHandler)
     {
         _mainState = mainState;
         _getStateApiKey = getStateApiKey;
-        // TODO make configurable
-        _policy = Policy.RateLimitAsync(5, TimeSpan.FromSeconds(10), maxBurst: 3);
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(
@@ -37,8 +32,6 @@ public class GazelleHandler : DelegatingHandler
 
         request.Headers.Add("Authorization", apiKey);
 
-        return await _policy.ExecuteAsync(
-            async innerCancellationToken => await base.SendAsync(request, innerCancellationToken).ConfigureAwait(false),
-            cancellationToken);
+        return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
     }
 }

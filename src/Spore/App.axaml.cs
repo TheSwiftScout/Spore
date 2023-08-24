@@ -1,9 +1,9 @@
-using System;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
+using Microsoft.Extensions.Configuration;
 using ReactiveUI;
 using Splat;
 using Spore.CrossSeed;
@@ -34,7 +34,13 @@ public class App : Application
 
         SplatRegistrations.SetupIOC();
 
-        SplatRegistrations.Register<TransientHttpErrorHandler>();
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json", false, true)
+            .AddEnvironmentVariables("SPORE_")
+            .Build();
+        RegisterClientConfiguration<RedactedClientConfiguration>(configuration);
+        RegisterClientConfiguration<OrpheusClientConfiguration>(configuration);
+        RegisterClientConfiguration<QBittorrentClientConfiguration>(configuration);
 
         var mainState = RxApp.SuspensionHost.GetAppState<MainState>();
         SplatRegistrations.RegisterConstant(mainState);
@@ -49,8 +55,6 @@ public class App : Application
 
         SplatRegistrations.RegisterLazySingleton<CrossSeedViewModel>();
 
-        SplatRegistrations.Register<GazelleHandlerFactory>();
-
         SplatRegistrations.RegisterLazySingleton<RedactedClient>();
         SplatRegistrations.RegisterLazySingleton<RedactedLoginViewModel>();
         SplatRegistrations.Register<IViewFor<RedactedLoginViewModel>, GazelleLoginView>();
@@ -59,9 +63,7 @@ public class App : Application
         SplatRegistrations.RegisterLazySingleton<OrpheusLoginViewModel>();
         SplatRegistrations.Register<IViewFor<OrpheusLoginViewModel>, GazelleLoginView>();
 
-        var assembly = Assembly.GetAssembly(GetType()) ??
-                       throw new InvalidOperationException("Registry assembly must not be null");
-        Locator.CurrentMutable.RegisterViewsForViewModels(assembly);
+        Locator.CurrentMutable.RegisterViewsForViewModels(Assembly.GetExecutingAssembly());
 
         var mainView = new MainView
         {
@@ -82,5 +84,14 @@ public class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static void RegisterClientConfiguration<T>(IConfiguration configuration)
+        where T : IDefaultHttpHandlerConfiguration
+    {
+        SplatRegistrations.RegisterConstant(
+            configuration
+                .GetRequiredSection(typeof(T).Name)
+                .Get<T>()!);
     }
 }

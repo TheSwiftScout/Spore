@@ -12,12 +12,11 @@ public class MainViewModel : ViewModelBase, IScreen
 {
     private readonly IObservable<bool> _isFullyAuthenticated;
 
+    // ReSharper disable once SuggestBaseTypeForParameterInConstructor (DI)
     public MainViewModel(
-        // ReSharper disable SuggestBaseTypeForParameterInConstructor (DI)
+        LoginStatusBarViewModel loginStatusBarViewModel,
         LoginViewModel loginViewModel,
-        CrossSeedViewModel crossSeedViewModel,
-        // ReSharper restore SuggestBaseTypeForParameterInConstructor
-        LoginStatusBarViewModel loginStatusBarViewModel)
+        CrossSeedViewModel crossSeedViewModel)
     {
         Routes = new List<RoutableViewModelBase>
         {
